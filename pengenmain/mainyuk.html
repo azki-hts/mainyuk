@@ -1,0 +1,111 @@
+<!doctype html>
+
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>pengenpulang.com</title>
+  <meta name="description" content="Landing sederhana dengan animasi ketik" />
+  <style>
+    :root{
+      --bg: #0f0f12;
+      --fg: #eaeaf0;
+      --red: #e53935;
+      --speed: 65; /* ms per karakter */
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1000px 600px at 50% -10%, #1a1a22 0%, var(--bg) 60%);
+      color: var(--fg);
+      display:grid;
+      place-items:center;
+    }
+    .wrap{
+      width:min(960px, 92vw);
+      text-align:center;
+      display:flex;
+      flex-direction:column;
+      gap: clamp(8px, 2.8vw, 20px);
+      padding: clamp(16px, 4vw, 32px);
+    }
+    .line{
+      font-weight:700;
+      letter-spacing: 0.5px;
+      line-height:1.15;
+      text-wrap:balance;
+    }
+    .line .text{
+      display:inline-block;
+      min-height: 1em; /* cegah loncat saat kosong */
+      position:relative;
+      white-space:nowrap;
+    }
+    /* caret */
+    .line .text::after{
+      content:"";
+      display:inline-block;
+      width: 0.65ch;
+      height: 1em;
+      border-right: 2px solid currentColor;
+      transform: translateY(2px);
+      animation: blink 1s steps(1) infinite;
+      margin-left: 2px;
+    }
+    .line.done .text::after{ border-right-color: transparent; }@keyframes blink { 50% { opacity: 0; } }
+
+/* ukuran font responsif */
+.s1{ font-size: clamp(28px, 8vw, 60px); }
+.s2{ font-size: clamp(26px, 7.5vw, 52px); }
+.s3{ font-size: clamp(26px, 7.2vw, 52px); }
+.s4{ font-size: clamp(36px, 10vw, 84px); color: var(--red); }
+
+/* sentuhan manis */
+.subtle{
+  opacity:.85;
+  filter: drop-shadow(0 6px 22px rgba(0,0,0,.45));
+}
+
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="line s1 subtle"><span id="l1" class="text" data-text="kapan main"></span></div>
+    <div class="line s2 subtle"><span id="l2" class="text" data-text="kapan main"></span></div>
+    <div class="line s3 subtle"><span id="l3" class="text" data-text="ayo main"></span></div>
+    <div class="line s4"><span id="l4" class="text" data-text="AKU KANGEN KALIANN"></span></div>
+  </main>  <script>
+    // util: delay dalam ms
+    const wait = (ms) => new Promise(r => setTimeout(r, ms));
+
+    // fungsi mengetik per karakter
+    async function typeTo(el, text, speed){
+      el.textContent = ""; // pastikan kosong
+      for (let i=0; i<text.length; i++){
+        el.textContent += text[i];
+        await wait(speed);
+      }
+      // tandai baris selesai (sembunyikan caret)
+      el.parentElement.classList.add('done');
+    }
+
+    // jalankan berurutan
+    (async () => {
+      const speed = Number(getComputedStyle(document.documentElement).getPropertyValue('--speed')) || 65;
+      const l1 = document.getElementById('l1');
+      const l2 = document.getElementById('l2');
+      const l3 = document.getElementById('l3');
+      const l4 = document.getElementById('l4');
+
+      await typeTo(l1, l1.dataset.text, speed);
+      await wait(300);
+      await typeTo(l2, l2.dataset.text, speed);
+      await wait(300);
+      await typeTo(l3, l3.dataset.text, speed);
+      await wait(350);
+      await typeTo(l4, l4.dataset.text, Math.max(45, speed - 10));
+    })();
+  </script></body>
+</html>
